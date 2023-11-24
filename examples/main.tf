@@ -1,11 +1,13 @@
 terraform {
   required_providers {
-    hashicups = {
+    movies = {
       source = "hashicorp.com/edu/movies"
     }
   }
 }
 
-provider "movies" {}
-
+provider "movies" {
+  host = "localhost"
+  port = "8080"
+}
 

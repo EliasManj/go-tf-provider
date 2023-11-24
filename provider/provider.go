@@ -101,7 +101,7 @@ func (*moviesProvider) DataSources(context.Context) []func() datasource.DataSour
 
 // Metadata implements provider.Provider.
 func (p *moviesProvider) Metadata(_ context.Context, _ provider.MetadataRequest, resp *provider.MetadataResponse) {
-	resp.TypeName = "hashicups"
+	resp.TypeName = "movies"
 	resp.Version = p.version
 }
 
