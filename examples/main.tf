@@ -11,3 +11,6 @@ provider "movies" {
   port = "8080"
 }
 
+resource movies_movie movie {
+  title = "John Wick 2"
+}

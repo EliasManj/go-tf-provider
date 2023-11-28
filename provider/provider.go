@@ -2,8 +2,8 @@ package provider
 
 import (
 	"context"
-	"net/http"
 	"os"
+	"terraform-provider-movies/client"
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/path"
@@ -74,21 +74,21 @@ func (*moviesProvider) Configure(ctx context.Context, req provider.ConfigureRequ
 
 	tflog.Debug(ctx, "Creating Movies client")
 
-	url := host + ":" + port + "/movies"
+	url := "http://" + host + ":" + port
 
-	_, err := http.Get(url)
+	client, err := client.NewClient(url)
+
 	if err != nil {
 		resp.Diagnostics.AddError(
-			"Unable to Create Movies API Client",
-			"Movies Client Error: "+err.Error(),
+			"Unable to Create Movies API Client", err.Error(),
 		)
 		return
 	}
 
 	// Make the HashiCups client available during DataSource and Resource
 	// type Configure methods.
-	resp.DataSourceData = url
-	resp.ResourceData = url
+	resp.DataSourceData = client
+	resp.ResourceData = client
 
 	tflog.Info(ctx, "Configured Movies client", map[string]any{"success": true})
 }
@@ -108,7 +108,9 @@ func (p *moviesProvider) Metadata(_ context.Context, _ provider.MetadataRequest,
 // Resources implements provider.Provider.
 func (*moviesProvider) Resources(context.Context) []func() resource.Resource {
 	//panic("unimplemented resources")
-	return nil
+	return []func() resource.Resource{
+		NewMovieResource,
+	}
 }
 
 // Schema implements provider.Provider.
